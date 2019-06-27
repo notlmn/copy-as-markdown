@@ -4,6 +4,9 @@
 
 > Browser extension to copy hyperlinks, images, and selected text as Markdown
 
+Inspired from [this tweet](https://mobile.twitter.com/NicoloRibaudo/status/1143521181196345346) by [@nicolo-ribaudo](https://github.com/nicolo-ribaudo).
+
+## Screenshot
 ![Copy as Markdown](media/screenshot.png)
 
 ## Install
