@@ -83,7 +83,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 	const mdData = turndownService.turndown(htmlContent);
 
 	const inputElement = document.createElement('textarea');
-	document.body.appendChild(inputElement);
+	document.body.append(inputElement);
 	inputElement.value = mdData;
 	inputElement.focus();
 	inputElement.select();
