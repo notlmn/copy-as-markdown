@@ -1,13 +1,13 @@
 {
-	"name": "Awesome Extension",
+	"name": "Copy as Markdown",
 	"version": "0.0.0",
-	"description": "An awesome new browser extension",
-	"homepage_url": "https://github.com/awesome-templates/browser-extension-template",
+	"description": "Browser extension to copy hyperlinks, images, and selected text as Markdown",
+	"homepage_url": "https://github.com/notlmn/copy-as-markdown",
 	"manifest_version": 2,
 	"minimum_chrome_version": "74",
 	"applications": {
 		"gecko": {
-			"id": "{00000000-0000-0000-0000-000000000000}",
+			"id": "{6779b4de-d680-462a-8038-43079e365983}",
 			"strict_min_version": "67.0"
 		}
 	},
@@ -15,15 +15,11 @@
 		"128": "icon.png"
 	},
 	"permissions": [
-		"storage"
+		"contextMenus",
+		"activeTab"
 	],
-	"optional_permissions": [],
 	"browser_action": {
 		"default_icon": "icon.png"
-	},
-	"options_ui": {
-		"chrome_style": true,
-		"page": "options.html"
 	},
 	"background": {
 		"persistent": false,

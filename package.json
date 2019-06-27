@@ -9,7 +9,7 @@
 		"build": "webpack --mode=production",
 		"watch": "webpack --mode=development --watch",
 		"prerelease:version": "if [[ $RELEASE_ON_TAGS = true ]]; then VERSION=$(echo $TRAVIS_TAG); else VERSION=$(utc-version); fi; echo $VERSION; dot-json distribution/manifest.json version $VERSION",
-		"prerelease:source-url": "echo https://github.com/sindresorhus/refined-github/tree/\"${TRAVIS_COMMIT:-$VERSION}\" > distribution/SOURCE_URL",
+		"prerelease:source-url": "echo https://github.com/notlmn/copy-as-markdown/tree/\"${TRAVIS_COMMIT:-$VERSION}\" > distribution/SOURCE_URL",
 		"release": "npm-run-all build prerelease:* release:*",
 		"release:cws": "webstore upload --source=distribution --auto-publish",
 		"release:amo": "web-ext-submit --source-dir distribution"
@@ -34,7 +34,8 @@
 		"xo": "^0.24.0"
 	},
 	"dependencies": {
-		"webext-options-sync": "^0.16.0",
+		"turndown": "^5.0.3",
+		"turndown-plugin-gfm": "^1.0.2",
 		"webextension-polyfill": "^0.4.0"
 	},
 	"xo": {
