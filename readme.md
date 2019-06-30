@@ -12,7 +12,7 @@ Inspired from [this tweet](https://mobile.twitter.com/NicoloRibaudo/status/11435
 ## Install
 
 - [**Firefox** add-on.][link-amo] [<img valign="middle" src="https://img.shields.io/amo/v/cpy-as-md.svg?label=%20">][link-amo]
-- **Chrome** extension not published yet.
+- Download and load signed **Chrome** extension from [here](https://github.com/notlmn/copy-as-markdown/releases/latest).
 
 ## Features
 
