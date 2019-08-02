@@ -19,7 +19,7 @@ Inspired from [this tweet](https://mobile.twitter.com/NicoloRibaudo/status/11435
 - Ability to copy links, images, and selected text as Markdown.
 - Linked images, will have options to individually select link or images.
 
-When copying links and images, Chrome doesn't ley you extract images alt text or anchors text content to be used in Markdown, instead the links themselves are used as link content. Firefox doesn't have this limitation though.
+When copying links and images, Chrome doesn't let you extract images alt text or anchors text content to be used in Markdown, instead the links themselves are used as link content. Firefox doesn't have this limitation though.
 
 ``` md
 <a href="https://github.com/notlmn">Laxman</a>
