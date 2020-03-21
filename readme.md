@@ -34,6 +34,15 @@ When copying links and images, Chrome doesn't let you extract images alt text or
 ![hello world](https://notlmn.github.io/image.png)
 ```
 
+### Permissions
+
+The extension requires the following permission from you for working.
+
+1. `contextMenus`: to show option when right-clicking.
+1. `activeTab`: to be able to access content on page.
+1. `clipboardWrite`: to be able to write data to clipboard (we still can't read from your clipboard).
+
+
 ## License
 
 MIT
