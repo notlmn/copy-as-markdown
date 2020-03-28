@@ -7,7 +7,7 @@ module.exports = {
 	devtool: 'sourcemap',
 	stats: 'errors-only',
 	entry: {
-		background: './source/background'
+		'copy-as-markdown': './source/copy-as-markdown.js'
 	},
 	output: {
 		path: path.join(__dirname, 'distribution'),
@@ -19,7 +19,7 @@ module.exports = {
 			{
 				from: '**/*',
 				context: 'source',
-				ignore: '*.js'
+				ignore: ['*.js']
 			},
 			{
 				from: 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'

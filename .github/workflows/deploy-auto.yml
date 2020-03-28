@@ -1,0 +1,21 @@
+# Automatically create a new version/tag, if new commits are available since the last tag
+name: Auto-tagger
+
+on:
+  schedule:
+    - cron: '01 10 * * 1' # Every Monday at 10:01 https://crontab.guru/#01_10_*_*_1
+
+jobs:
+  create-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: fregante/setup-git-token@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          if [[ $(git tag -l --points-at HEAD) = "" ]]; then
+            export VER=$(npx daily-version)
+            git tag $VER -m $VER
+            git push origin $VER
+          fi
