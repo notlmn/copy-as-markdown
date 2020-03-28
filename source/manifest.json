@@ -12,7 +12,7 @@
 		}
 	},
 	"icons": {
-		"128": "icon.png"
+		"128": "copy-as-markdown.png"
 	},
 	"permissions": [
 		"contextMenus",
@@ -20,13 +20,13 @@
 		"clipboardWrite"
 	],
 	"browser_action": {
-		"default_icon": "icon.png"
+		"default_icon": "copy-as-markdown.png"
 	},
 	"background": {
 		"persistent": false,
 		"scripts": [
 			"browser-polyfill.min.js",
-			"background.js"
+			"copy-as-markdown.js"
 		]
 	}
 }
