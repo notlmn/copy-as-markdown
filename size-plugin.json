@@ -1,1 +1,1 @@
-[{"timestamp":1585427306325,"files":[{"filename":"browser-polyfill.min.js","previous":3098,"size":0,"diff":-3098},{"filename":"copy-as-markdown.js","previous":6224,"size":6224,"diff":0}]}]
+[{"timestamp":1587928915757,"files":[{"filename":"copy-as-markdown.js","previous":6224,"size":6285,"diff":61}]},{"timestamp":1585427306325,"files":[{"filename":"browser-polyfill.min.js","previous":3098,"size":0,"diff":-3098},{"filename":"copy-as-markdown.js","previous":6224,"size":6224,"diff":0}]}]

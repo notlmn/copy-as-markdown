@@ -43,34 +43,37 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 			code: `
 				function getSelectionAsHTML() {
 					const selection = document.getSelection();
-					let tagName = '';
+					let containerTagName = '';
 
-					if (selection.rangeCount > 0) {
-						const selectionRange = selection.getRangeAt(0); // Only consider the first range
-						const container = selectionRange.commonAncestorContainer;
-
-						// All of text in container element is selected, then use parents tag
-						if (selectionRange.toString() === container.textContent) {
-							tagName = container.tagName.toLowerCase();
-						}
-
-						const fragment = selectionRange.cloneContents();
-						const div = document.createElement('div');
-						div.appendChild(fragment);
-
-						if (tagName === '') {
-							return div.outerHTML;
-						}
-
-						// For preformatted tags, need to use <code> or it will not be considered as fenced code block
-						if (tagName === 'pre') {
-							return \`<pre><code>\${div.innerHTML}</code></pre>\`;
-						}
-
-						return \`<\${tagName}>\${div.innerHTML}</\${tagName}>\`;
+					if (selection.rangeCount === 0) {
+						return '';
 					}
 
-					return '';
+					const selectionRange = selection.getRangeAt(0); // Only consider the first range
+					const container = selectionRange.commonAncestorContainer;
+
+					// All of text in container element is selected, then use parents tag
+					if (selectionRange.toString().trim() === container.textContent.trim()) {
+						containerTagName = container.tagName.toLowerCase();
+					}
+
+					const fragment = selectionRange.cloneContents();
+					const wrapper = document.createElement('div');
+					wrapper.appendChild(fragment);
+
+					// Converts relative links to absolute links (#6)
+					wrapper.querySelectorAll('a').forEach(link => link.href = link.href);
+
+					if (containerTagName === '') {
+						return wrapper.innerHTML;
+					}
+
+					// For preformatted tags, need to use <code> or it will not be considered as fenced code block
+					if (containerTagName === 'pre') {
+						return '<pre><code>' + wrapper.innerHTML + '</code></pre>';
+					}
+
+					return '<' + containerTagName + '>' + wrapper.innerHTML + '</' + containerTagName + '>';
 				}
 
 				getSelectionAsHTML();
