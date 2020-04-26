@@ -24,7 +24,29 @@ const turndownService = new TurndownService({
 	codeBlockStyle: 'fenced'
 });
 
-turndownService.keep(['kbd']); // HTML content to retain in Markdown
+// HTML content to retain in Markdown
+turndownService.keep(['kbd']);
+
+// Workaround to fix #7 until https://github.com/domchristie/turndown/issues/291 gets fixed
+turndownService.addRule('listItem', {
+	filter: 'li',
+	replacement: (content, node, options) => {
+		content = content
+			.replace(/^\n+/, '') // Remove leading newlines
+			.replace(/\n+$/, '\n') // Replace trailing newlines with just a single one
+			.replace(/\n/gm, '\n    '); // Indent
+
+		let prefix = options.bulletListMarker + ' ';
+		const parent = node.parentNode;
+		if (parent.nodeName === 'OL') {
+			const start = parent.getAttribute('start');
+			const index = Array.prototype.indexOf.call(parent.children, node);
+			prefix = (start ? Number(start) + index : index + 1) + '. ';
+		}
+
+		return (prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : ''));
+	}
+});
 
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
 	const text = info.linkText;
@@ -54,7 +76,13 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 
 					// All of text in container element is selected, then use parents tag
 					if (selectionRange.toString().trim() === container.textContent.trim()) {
-						containerTagName = container.tagName.toLowerCase();
+						// Handle plain text selections where parent is sometimes 'Node' or 'DocumentFragment'
+						// Ideally, this should not happen, but text selection in browsers is unpredictable
+						if (container instanceof Element) {
+							containerTagName = container.tagName.toLowerCase();
+						} else {
+							containerTagName = 'p';
+						}
 					}
 
 					const fragment = selectionRange.cloneContents();
