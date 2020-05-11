@@ -1,6 +1,8 @@
 name: Deployment
 
 on:
+  schedule:
+    - cron: '01 10 * * 1' # Every Monday at 10:01 https://crontab.guru/#01_10_*_*_1
   push:
     tags:
       - "20.*"
@@ -11,13 +13,32 @@ on:
 
 jobs:
 
-  build:
+  Version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: fregante/setup-git-token@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create tag if necessary
+        if: github.event_name == 'schedule'
+        run: |
+          git fetch --tags
+          if [[ $(git tag -l --points-at HEAD) = '' ]]; then
+            echo '::set-output name=created::yes'
+            export VER=$(npx daily-version)
+            git tag $VER -m $VER
+            git push origin $VER
+          fi
+  Build:
+    needs: Version
+    if: github.event_name == 'push' || needs.Version.outputs.created
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - run: npm install
     - run: npm test
-    - name: Version and tag
+    - name: Update extension’s meta
       run: |
         export VER=$(echo "$GITHUB_REF" | sed -e 's/refs\/tags\///')
         echo https://github.com/$GITHUB_REPOSITORY/tree/$VER > distribution/SOURCE_URL
@@ -27,8 +48,8 @@ jobs:
         name: built-extension
         path: distribution
 
-  deploy-to-chrome:
-    needs: build
+  For Chrome:
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/download-artifact@v1
@@ -37,13 +58,13 @@ jobs:
         path: distribution
     - run: cd distribution && npx chrome-webstore-upload-cli upload --auto-publish
       env:
-        EXTENSION_ID: nlaionblcaejecbkcillglodmmfhjhfi
+        EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
 
-  deploy-to-firefox:
-    needs: build
+  For Firefox:
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/download-artifact@v1
