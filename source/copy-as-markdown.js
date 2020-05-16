@@ -1,3 +1,5 @@
+/* global __INJECTIBLE_CODE__: readonly */
+
 import TurndownService from 'turndown';
 import {gfm} from 'turndown-plugin-gfm';
 
@@ -6,7 +8,7 @@ const turndownService = new TurndownService({
 	hr: '-',
 	headingStyle: 'atx',
 	bulletListMarker: '-',
-	codeBlockStyle: 'fenced',
+	codeBlockStyle: 'fenced'
 });
 turndownService.keep(['kbd', 'sup', 'sub']); // HTML content to retain in Markdown
 turndownService.use(gfm);
@@ -35,7 +37,7 @@ turndownService.addRule('listItem', {
 // Action listener to redirect user to source repo
 browser.browserAction.onClicked.addListener(() => {
 	browser.tabs.create({
-		url: 'https://github.com/notlmn/copy-as-markdown',
+		url: 'https://github.com/notlmn/copy-as-markdown'
 	});
 });
 
@@ -45,7 +47,7 @@ for (const context of contexts) {
 	browser.contextMenus.create({
 		id: `cpy-as-md:${context}`,
 		title: `Copy ${context} as Markdown`,
-		contexts: [context],
+		contexts: [context]
 	});
 }
 
@@ -64,7 +66,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 	} else if (info.menuItemId.endsWith('selection')) {
 		const completionData = await browser.tabs.executeScript(tab.id, {
 			frameId: info.frameId,
-			code: __INJECTIBLE_CODE__, // Replaced by webpack with actual code
+			code: __INJECTIBLE_CODE__ // Replaced by webpack with actual code
 		});
 
 		htmlContent = completionData[0] || '';

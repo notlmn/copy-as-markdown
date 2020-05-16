@@ -22,17 +22,17 @@ function getSelectionAsHTML() {
 
 	const fragment = selectionRange.cloneContents();
 	const wrapper = document.createElement('div');
-	wrapper.appendChild(fragment);
+	wrapper.append(fragment);
 
 	// Converts relative links to absolute links (#6)
-	wrapper.querySelectorAll('a').forEach(link => link.href = link.href);
+	wrapper.querySelectorAll('a').forEach(link => link.setAttribute('href', link.href));
 
 	// For tables, remove all immediate child nodes that are not required
 	const tables = wrapper.querySelectorAll('table');
 	for (const table of tables) {
 		const floaters = Array.from(table.children).filter(node => !['THEAD', 'TBODY', 'TR', 'TFOOT'].includes(node.tagName));
 		for (const floater of floaters) {
-			floater.parentNode.removeChild(floater);
+			floater.remove();
 		}
 	}
 
