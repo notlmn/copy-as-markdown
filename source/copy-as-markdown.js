@@ -1,31 +1,17 @@
+/* global __INJECTIBLE_CODE__: readonly */
+
 import TurndownService from 'turndown';
+import {gfm} from 'turndown-plugin-gfm';
 
-const repoUrl = 'https://github.com/notlmn/copy-as-markdown';
-
-browser.browserAction.onClicked.addListener(() => {
-	browser.tabs.create({
-		url: repoUrl
-	});
-});
-
-const contexts = ['image', 'link', 'selection'];
-
-for (const context of contexts) {
-	browser.contextMenus.create({
-		id: `cpy-as-md:${context}`,
-		title: `Copy ${context} as Markdown`,
-		contexts: [context]
-	});
-}
-
+// Instantiate Turndown instance
 const turndownService = new TurndownService({
+	hr: '-',
 	headingStyle: 'atx',
 	bulletListMarker: '-',
 	codeBlockStyle: 'fenced'
 });
-
-// HTML content to retain in Markdown
-turndownService.keep(['kbd']);
+turndownService.keep(['kbd', 'sup', 'sub']); // HTML content to retain in Markdown
+turndownService.use(gfm);
 
 // Workaround to fix #7 until https://github.com/domchristie/turndown/issues/291 gets fixed
 turndownService.addRule('listItem', {
@@ -48,6 +34,24 @@ turndownService.addRule('listItem', {
 	}
 });
 
+// Action listener to redirect user to source repo
+browser.browserAction.onClicked.addListener(() => {
+	browser.tabs.create({
+		url: 'https://github.com/notlmn/copy-as-markdown'
+	});
+});
+
+// Add context menus for specific actions
+const contexts = ['image', 'link', 'selection'];
+for (const context of contexts) {
+	browser.contextMenus.create({
+		id: `cpy-as-md:${context}`,
+		title: `Copy ${context} as Markdown`,
+		contexts: [context]
+	});
+}
+
+// Listener for events from context menus
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
 	const text = info.linkText;
 	const assetUrl = encodeURI(info.srcUrl);
@@ -62,60 +66,17 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 	} else if (info.menuItemId.endsWith('selection')) {
 		const completionData = await browser.tabs.executeScript(tab.id, {
 			frameId: info.frameId,
-			code: `
-				function getSelectionAsHTML() {
-					const selection = document.getSelection();
-					let containerTagName = '';
-
-					if (selection.rangeCount === 0) {
-						return '';
-					}
-
-					const selectionRange = selection.getRangeAt(0); // Only consider the first range
-					const container = selectionRange.commonAncestorContainer;
-
-					// All of text in container element is selected, then use parents tag
-					if (selectionRange.toString().trim() === container.textContent.trim()) {
-						// Handle plain text selections where parent is sometimes 'Node' or 'DocumentFragment'
-						// Ideally, this should not happen, but text selection in browsers is unpredictable
-						if (container instanceof Element) {
-							containerTagName = container.tagName.toLowerCase();
-						} else {
-							containerTagName = 'p';
-						}
-					}
-
-					const fragment = selectionRange.cloneContents();
-					const wrapper = document.createElement('div');
-					wrapper.appendChild(fragment);
-
-					// Converts relative links to absolute links (#6)
-					wrapper.querySelectorAll('a').forEach(link => link.href = link.href);
-
-					if (containerTagName === '') {
-						return wrapper.innerHTML;
-					}
-
-					// For preformatted tags, need to use <code> or it will not be considered as fenced code block
-					if (containerTagName === 'pre') {
-						return '<pre><code>' + wrapper.innerHTML + '</code></pre>';
-					}
-
-					return '<' + containerTagName + '>' + wrapper.innerHTML + '</' + containerTagName + '>';
-				}
-
-				getSelectionAsHTML();
-			`
+			code: __INJECTIBLE_CODE__ // Replaced by webpack with actual code
 		});
 
 		htmlContent = completionData[0] || '';
 	}
 
-	const mdData = turndownService.turndown(htmlContent);
+	const markdownData = turndownService.turndown(htmlContent);
 
 	const inputElement = document.createElement('textarea');
 	document.body.append(inputElement);
-	inputElement.value = mdData;
+	inputElement.value = markdownData;
 	inputElement.focus();
 	inputElement.select();
 	document.execCommand('Copy');
