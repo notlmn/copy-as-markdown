@@ -2,7 +2,7 @@ name: Deployment
 
 on:
   schedule:
-    - cron: '01 10 * * 1' # Every Monday at 10:01 https://crontab.guru/#01_10_*_*_1
+    - cron: '10 11 * * 1' # Every Monday at 11:10 https://crontab.guru/#10_11_*_*_1
   push:
     tags:
       - "20.*"
@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  version:
+  Version:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,9 +31,9 @@ jobs:
             git push origin $VER
           fi
 
-  build:
-    needs: version
-    if: github.event_name == 'push' || needs.version.outputs.created
+  Build:
+    needs: Version
+    if: github.event_name == 'push' || needs.Version.outputs.created
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -49,8 +49,8 @@ jobs:
         name: built-extension
         path: distribution
 
-  release-chrome:
-    needs: build
+  Chrome:
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/download-artifact@v1
@@ -64,8 +64,8 @@ jobs:
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
 
-  release-firefox:
-    needs: build
+  Firefox:
+    needs: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/download-artifact@v1
