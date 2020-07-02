@@ -18,17 +18,16 @@ Inspired from [this tweet](https://twitter.com/NicoloRibaudo/status/114352118119
 
 ## Features
 
-The user has access to three actions provided in the context menus with support to handle the following text styles.
+The extension allows you to copy selected text on a page as Markdown with support for features including the following
 
-- **Formatted Text**: _Italic_, **bold**, ~~strikethrough~~, and `inline code`.
-- **Unordered and Ordered Lists**: With [task lists](https://github.github.com/gfm/#task-list-items-extension-) support.
-- **Tables**: A [GFM extension](https://github.github.com/gfm/#tables-extension-).
-- **Fenced code blocks**: And language detection using [info strings](https://github.github.com/gfm/#example-112).
-- **Links and Images**
-  - `<a href="https://github.com/notlmn">Laxman</a>` → `[Laxman](https://github.com/notlmn)`
-  - `<img alt="hello world" src="https://notlmn.github.io/image.png">` → `![hello world](https://notlmn.github.io/image.png)`
+- Ability to copy links, images, and selected text as Markdown.
+- Linked images, will have options to individually select link or images.
+- Formatted text such as _italic_, **bold**, ~~strike-through~~, and `inline code`.
+- Unordered and ordered lists, with [task lists](https://github.github.com/gfm/#task-list-items-extension-) support.
+- Tables, with respect to [GFM](https://github.github.com/gfm/#tables-extension-).
+- Fenced code blocks, with language detection using [info strings](https://github.github.com/gfm/#example-112).
 
-  > **Note:** When copying links and images, Chrome doesn’t let you extract images `alt` text or text content of anchor nodes to be used in Markdown, instead the links themselves are used as link content. Firefox doesn’t have this limitation.
+> **_Note_**: When copying links and images, Chrome doesn’t let you extract images alt text or anchors text content to be used in Markdown, instead the links themselves are used as link title. Firefox doesn’t have this limitation though.
 
 
 ### Permissions
@@ -42,7 +41,7 @@ The extension requires the following permission from you for working.
 
 ## License
 
-[MIT](license)
+[MIT](license) &copy; Laxman Damera
 
 
 [link-amo]: https://addons.mozilla.org/en-US/firefox/addon/cpy-as-md/
