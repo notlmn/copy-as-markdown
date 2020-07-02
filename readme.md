@@ -39,6 +39,11 @@ The extension requires the following permission from you for working.
 1. `clipboardWrite`: to be able to write data to clipboard (we still can’t read from your clipboard).
 
 
+## Similar
+
+- [browser-extension-template][https://github.com/notlmn/browser-extension-template] - Barebones boilerplate with webpack, options handler and auto-publishing.
+
+
 ## License
 
 [MIT](license) &copy; Laxman Damera
