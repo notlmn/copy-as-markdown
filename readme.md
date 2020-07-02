@@ -42,7 +42,7 @@ The extension requires the following permission from you for working.
 Inspired by [this tweet](https://twitter.com/NicoloRibaudo/status/1143521181196345346) from [@nicolo-ribaudo](https://github.com/nicolo-ribaudo), and publishing made possible by [@yakov116](https://github.com/yakov116).
 
 
-## Similar
+## Related
 
 - [browser-extension-template](https://github.com/notlmn/browser-extension-template) - Barebones boilerplate with webpack, options handler and auto-publishing.
 
