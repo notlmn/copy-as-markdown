@@ -51,6 +51,16 @@ for (const context of contexts) {
 	});
 }
 
+const copy = text => {
+	const inputElement = document.createElement('textarea');
+	document.body.append(inputElement);
+	inputElement.value = text;
+	inputElement.focus();
+	inputElement.select();
+	document.execCommand('Copy');
+	inputElement.remove();
+};
+
 // Listener for events from context menus
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
 	const text = info.linkText;
@@ -74,11 +84,15 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 
 	const markdownData = turndownService.turndown(htmlContent);
 
-	const inputElement = document.createElement('textarea');
-	document.body.append(inputElement);
-	inputElement.value = markdownData;
-	inputElement.focus();
-	inputElement.select();
-	document.execCommand('Copy');
-	inputElement.remove();
+	copy(markdownData);
+});
+
+// Listener for events from shortcuts
+browser.commands.onCommand.addListener(async command => {
+	if (command === 'copy-selection-as-md') {
+		const completionData = await browser.tabs.executeScript({code: __INJECTIBLE_CODE__});
+		const htmlContent = completionData[0] || '';
+		const markdownData = turndownService.turndown(htmlContent);
+		copy(markdownData);
+	}
 });
