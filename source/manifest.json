@@ -30,12 +30,12 @@
 		]
 	},
 	"commands": {
-	   "copy-selection-as-md": {
-		 "suggested_key": {
-		   "default": "Ctrl+Shift+S",
-		   "mac": "Command+Shift+S"
-		 },
-		 "description": "Copy selection as md"
-	   }
+		"copy-selection-as-md": {
+			"suggested_key": {
+				"default": "Alt+X",
+				"mac": "Alt+X"
+			},
+			"description": "Copy selection as markdown"
+		}
 	}
 }
