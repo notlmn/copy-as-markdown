@@ -5,7 +5,7 @@ import {gfm} from 'turndown-plugin-gfm';
 
 // Instantiate Turndown instance
 const turndownService = new TurndownService({
-	hr: '-',
+	hr: '---',
 	headingStyle: 'atx',
 	bulletListMarker: '-',
 	codeBlockStyle: 'fenced'
