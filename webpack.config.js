@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const SizePlugin = require('size-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
@@ -17,7 +16,6 @@ module.exports = {
 		filename: '[name].js'
 	},
 	plugins: [
-		new SizePlugin(),
 		new DefinePlugin({
 			__INJECTIBLE_CODE__: JSON.stringify(fs.readFileSync('./source/injectible-code.js', 'utf-8'))
 		}),
