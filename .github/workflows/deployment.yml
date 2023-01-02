@@ -1,6 +1,13 @@
-name: Deployment
+env:
+  DIRECTORY: distribution
 
+# FILE GENERATED WITH: npx ghat fregante/ghatemplates/webext
+# SOURCE: https://github.com/fregante/ghatemplates
+# OPTIONS: {"exclude":["on.schedule"]}
+
+name: Release
 on:
+  workflow_dispatch: null
   schedule:
     - cron: '10 11 * * 1' # Every Monday at 11:10 https://crontab.guru/#10_11_*_*_1
   push:
@@ -10,69 +17,74 @@ on:
       - "22.*"
       - "23.*"
       - "24.*"
-
 jobs:
-
   Version:
+    outputs:
+      created: ${{ steps.daily-version.outputs.created }}
+      version: ${{ steps.daily-version.outputs.version }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: fregante/setup-git-token@v1
+      - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create tag if necessary
-        if: github.event_name == 'schedule'
-        run: |
-          git fetch --tags
-          if [[ $(git tag -l --points-at HEAD) = '' ]]; then
-            echo '::set-output name=created::yes'
-            export VER=$(npx daily-version)
-            git tag $VER -m $VER
-            git push origin $VER
-          fi
-
-  Build:
+          fetch-depth: 20
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: install
+        run: npm ci || npm install
+      - run: npm test
+      - uses: fregante/daily-version-action@v2
+        name: Create tag if necessary
+        id: daily-version
+      - if: steps.daily-version.outputs.created
+        name: Create release
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: >
+            await github.request(`POST /repos/${{ github.repository
+            }}/releases`, {
+              tag_name: "${{ steps.daily-version.outputs.version }}",
+              generate_release_notes: true
+            });
+  Submit:
     needs: Version
-    if: github.event_name == 'push' || needs.Version.outputs.created
+    if: github.event_name == 'workflow_dispatch' || needs.Version.outputs.created
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - firefox
+          - chrome
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: npm install
-    - run: npm test
-    - name: Update extension’s meta
-      run: |
-        export VER=$(echo "$GITHUB_REF" | sed -e 's/refs\/tags\///')
-        echo https://github.com/$GITHUB_REPOSITORY/tree/$VER > distribution/SOURCE_URL
-        npm run version
-    - uses: actions/upload-artifact@v1
-      with:
-        name: built-extension
-        path: distribution
-
-  Chrome:
-    needs: Build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/download-artifact@v1
-      with:
-        name: built-extension
-        path: distribution
-    - run: cd distribution && npx chrome-webstore-upload-cli upload --auto-publish
-      env:
-        EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
-        CLIENT_ID: ${{ secrets.CLIENT_ID }}
-        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-        REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-
-  Firefox:
-    needs: Build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/download-artifact@v1
-      with:
-        name: built-extension
-        path: distribution
-    - run: cd distribution && npx web-ext-submit
-      env:
-        WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
-        WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - name: install
+        run: npm ci || npm install
+      - run: npm run build --if-present
+      - name: Update extension’s meta
+        run: >-
+          npx dot-json@1 $DIRECTORY/manifest.json version ${{
+          needs.Version.outputs.version }}
+      - name: Submit
+        run: |
+          case ${{ matrix.command }} in
+            chrome)
+              cd $DIRECTORY && npx chrome-webstore-upload-cli@2 upload --auto-publish
+              ;;
+            firefox)
+              cd $DIRECTORY && npx web-ext-submit@7
+              ;;
+          esac
+        env:
+          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          WEB_EXT_API_KEY: ${{ secrets.WEB_EXT_API_KEY }}
+          WEB_EXT_API_SECRET: ${{ secrets.WEB_EXT_API_SECRET }}
