@@ -25,6 +25,8 @@ The extension allows you to copy selected text on a page as Markdown with suppor
 - Tables, with respect to [GFM](https://github.github.com/gfm/#tables-extension-).
 - Fenced code blocks, with language detection using [info strings](https://github.github.com/gfm/#example-112).
 
+### Known Issues
+
 > **_Note_**: When copying links and images, Chrome doesn’t let you extract images alt text or anchors text content to be used in Markdown, instead the links themselves are used as link title. Firefox doesn’t have this limitation though.
 
 
