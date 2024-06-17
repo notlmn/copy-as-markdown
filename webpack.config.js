@@ -1,34 +1,32 @@
-const fs = require('fs');
 const path = require('path');
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const DefinePlugin = require('webpack').DefinePlugin;
 
 module.exports = {
-	devtool: 'sourcemap',
+	devtool: 'source-map',
 	stats: 'errors-only',
 	entry: {
-		'copy-as-markdown': './source/copy-as-markdown.js'
+		'copy-as-markdown': './source/copy-as-markdown.js',
+		'background': './source/background.js',
 	},
 	output: {
 		path: path.join(__dirname, 'distribution'),
-		filename: '[name].js'
+		filename: '[name].js',
 	},
 	plugins: [
-		new DefinePlugin({
-			__INJECTIBLE_CODE__: JSON.stringify(fs.readFileSync('./source/injectible-code.js', 'utf-8'))
+		new CopyWebpackPlugin({
+			patterns: [
+				{
+					from: 'manifest.json',
+					context: 'source',
+				},
+				{
+					from: 'copy-as-markdown.png',
+					context: 'source',
+				},
+			],
 		}),
-		new CopyWebpackPlugin([
-			{
-				from: '**/*',
-				context: 'source',
-				ignore: ['*.js']
-			},
-			{
-				from: 'node_modules/webextension-polyfill/dist/browser-polyfill.min.js'
-			}
-		])
 	],
 	optimization: {
 		minimizer: [

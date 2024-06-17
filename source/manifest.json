@@ -3,12 +3,12 @@
 	"version": "0.0.0",
 	"description": "Browser extension to copy hyperlinks, images, and selected text as Markdown",
 	"homepage_url": "https://github.com/notlmn/copy-as-markdown",
-	"manifest_version": 2,
-	"minimum_chrome_version": "74",
-	"applications": {
+	"manifest_version": 3,
+	"minimum_chrome_version": "88",
+	"browser_specific_settings": {
 		"gecko": {
 			"id": "{6779b4de-d680-462a-8038-43079e365983}",
-			"strict_min_version": "67.0"
+			"strict_min_version": "106.0"
 		}
 	},
 	"icons": {
@@ -17,18 +17,31 @@
 	"permissions": [
 		"contextMenus",
 		"activeTab",
-		"clipboardWrite"
+		"nativeMessaging"
 	],
-	"browser_action": {
+	"action": {
 		"default_icon": "copy-as-markdown.png"
 	},
 	"background": {
-		"persistent": false,
-		"scripts": [
-			"browser-polyfill.min.js",
-			"copy-as-markdown.js"
-		]
+		"service_worker": "background.js",
+		"scripts": ["background.js"]
 	},
+	"content_scripts": [
+		{
+			"matches": ["*://*/*"],
+			"js": ["copy-as-markdown.js"],
+			"run_at": "document_start"
+		}
+	  ],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"copy-as-markdown.js",
+				"copy-as-markdown.js.map"
+			],
+			"matches": []
+		}
+	],
 	"commands": {
 		"copy-selection-as-md": {
 			"suggested_key": {
