@@ -1,7 +1,10 @@
-/* global __INJECTIBLE_CODE__: readonly */
-
 import TurndownService from 'turndown';
 import {gfm} from 'turndown-plugin-gfm';
+
+// Chrome does not support the browser namespace yet.
+if (typeof browser === 'undefined') {
+	globalThis.browser = chrome;
+}
 
 // Instantiate Turndown instance
 const turndownService = new TurndownService({
@@ -34,65 +37,78 @@ turndownService.addRule('listItem', {
 	}
 });
 
-// Action listener to redirect user to source repo
-browser.browserAction.onClicked.addListener(() => {
-	browser.tabs.create({
-		url: 'https://github.com/notlmn/copy-as-markdown'
-	});
-});
+function getSelectionAsHTML() {
+	const selection = document.getSelection();
+	let containerTagName = '';
 
-// Add context menus for specific actions
-const contexts = ['image', 'link', 'selection'];
-for (const context of contexts) {
-	browser.contextMenus.create({
-		id: `cpy-as-md:${context}`,
-		title: `Copy ${context} as Markdown`,
-		contexts: [context]
-	});
-}
-
-const copy = text => {
-	const inputElement = document.createElement('textarea');
-	document.body.append(inputElement);
-	inputElement.value = text;
-	inputElement.focus();
-	inputElement.select();
-	document.execCommand('Copy');
-	inputElement.remove();
-};
-
-// Listener for events from context menus
-browser.contextMenus.onClicked.addListener(async (info, tab) => {
-	const text = info.linkText;
-	const assetUrl = encodeURI(info.srcUrl);
-	const linkUrl = encodeURI(info.linkUrl);
-
-	let htmlContent = '';
-
-	if (info.menuItemId.endsWith('image')) {
-		htmlContent = `<img alt="${text || assetUrl}" src="${assetUrl}" />`;
-	} else if (info.menuItemId.endsWith('link')) {
-		htmlContent = `<a href="${linkUrl}">${text || linkUrl}</a>`;
-	} else if (info.menuItemId.endsWith('selection')) {
-		const completionData = await browser.tabs.executeScript(tab.id, {
-			frameId: info.frameId,
-			code: __INJECTIBLE_CODE__ // Replaced by webpack with actual code
-		});
-
-		htmlContent = completionData[0] || '';
+	if (selection.rangeCount === 0) {
+		return '';
 	}
 
-	const markdownData = turndownService.turndown(htmlContent);
+	const selectionRange = selection.getRangeAt(0); // Only consider the first range
+	const container = selectionRange.commonAncestorContainer;
 
-	copy(markdownData);
-});
+	// All of text in container element is selected, then use parents tag
+	if (selectionRange.toString().trim() === container.textContent.trim()) {
+		// Handle plain text selections where parent is sometimes 'Node' or 'DocumentFragment'
+		// Ideally, this should not happen, but text selection in browsers is unpredictable
+		if (container instanceof Element) {
+			containerTagName = container.tagName.toLowerCase();
+		} else {
+			containerTagName = 'p';
+		}
+	}
 
-// Listener for events from shortcuts
-browser.commands.onCommand.addListener(async command => {
-	if (command === 'copy-selection-as-md') {
-		const completionData = await browser.tabs.executeScript({code: __INJECTIBLE_CODE__});
-		const htmlContent = completionData[0] || '';
-		const markdownData = turndownService.turndown(htmlContent);
-		copy(markdownData);
+	const fragment = selectionRange.cloneContents();
+	const wrapper = document.createElement('div');
+	wrapper.append(fragment);
+
+	// Converts relative links to absolute links (#6)
+	wrapper.querySelectorAll('a').forEach(link => link.setAttribute('href', link.href));
+
+	// For tables, remove all immediate child nodes that are not required
+	const tables = wrapper.querySelectorAll('table');
+	for (const table of tables) {
+		const floaters = Array.from(table.children).filter(node => !['THEAD', 'TBODY', 'TR', 'TFOOT'].includes(node.tagName));
+		for (const floater of floaters) {
+			floater.remove();
+		}
+	}
+
+	if (containerTagName === '') {
+		return wrapper.innerHTML;
+	}
+
+	// For preformatted tags, content needs to be wrapped inside `<code>`
+	// or it would not be considered as fenced code block
+	if (containerTagName === 'pre') {
+		// Classes of parent or container node can be used by GFM plugin to detect language
+		const classes = (container.parentNode || container).classList.toString();
+
+		return `
+			<div class="${classes}">
+				<pre><code>${wrapper.innerHTML}</code></pre>
+			</div>
+		`;
+	}
+
+	return '<' + containerTagName + '>' + wrapper.innerHTML + '</' + containerTagName + '>';
+}
+
+browser.runtime.onMessage.addListener(async message => {
+	if (message.actionType === '') {
+		return;
+	}
+
+	let htmlContent = message.htmlContent;
+	if (message.actionType === 'selection') {
+		htmlContent = getSelectionAsHTML();
+	}
+
+	try {
+		const markdownContent = turndownService.turndown(htmlContent);
+		await navigator.clipboard.writeText(markdownContent);
+	} catch (error) {
+		console.error(error);
 	}
 });
