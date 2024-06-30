@@ -16,8 +16,7 @@
 	},
 	"permissions": [
 		"contextMenus",
-		"activeTab",
-		"nativeMessaging"
+		"activeTab"
 	],
 	"action": {
 		"default_icon": "copy-as-markdown.png"
