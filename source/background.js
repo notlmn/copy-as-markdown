@@ -3,13 +3,6 @@ if (typeof browser === 'undefined') {
 	globalThis.browser = chrome;
 }
 
-// Action listener to redirect user to source repo
-browser.action.onClicked.addListener(() => {
-	browser.tabs.create({
-		url: 'https://github.com/notlmn/copy-as-markdown'
-	});
-});
-
 // Add context menus for specific actions
 const contexts = ['image', 'link', 'selection'];
 for (const context of contexts) {
