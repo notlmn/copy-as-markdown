@@ -50,8 +50,8 @@ Inspired by [this tweet](https://twitter.com/NicoloRibaudo/status/11435211811963
 
 ## License
 
-[MIT](license) &copy; Laxman Damera
+[MIT](license)
 
 
-[link-amo]: https://addons.mozilla.org/en-US/firefox/addon/cpy-as-md/
-[link-cws]: https://chrome.google.com/webstore/detail/copy-as-markdown/nlaionblcaejecbkcillglodmmfhjhfi/
+[link-amo]: https://addons.mozilla.org/en-US/firefox/addon/cpy-as-md
+[link-cws]: https://chromewebstore.google.com/detail/copy-as-markdown/nlaionblcaejecbkcillglodmmfhjhfi
