@@ -11,9 +11,10 @@ const turndownService = new TurndownService({
 	hr: '---',
 	headingStyle: 'atx',
 	bulletListMarker: '-',
-	codeBlockStyle: 'fenced'
+	codeBlockStyle: 'fenced',
+  br: '<br>'
 });
-turndownService.keep(['kbd', 'sup', 'sub', 'br']); // HTML content to retain in Markdown
+turndownService.keep(['kbd', 'sup', 'sub']); // HTML content to retain in Markdown
 turndownService.use(gfm);
 
 // Workaround to fix #7 until https://github.com/domchristie/turndown/issues/291 gets fixed
