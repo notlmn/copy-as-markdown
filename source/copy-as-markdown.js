@@ -12,7 +12,7 @@ const turndownService = new TurndownService({
 	headingStyle: 'atx',
 	bulletListMarker: '-',
 	codeBlockStyle: 'fenced',
-  br: '<br>'
+	br: '<br>'
 });
 turndownService.keep(['kbd', 'sup', 'sub']); // HTML content to retain in Markdown
 turndownService.use(gfm);
