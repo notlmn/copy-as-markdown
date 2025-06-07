@@ -24,6 +24,7 @@ The extension allows you to copy selected text on a page as Markdown with suppor
 - Unordered and ordered lists, with [task lists](https://github.github.com/gfm/#task-list-items-extension-) support.
 - Tables, with respect to [GFM](https://github.github.com/gfm/#tables-extension-).
 - Fenced code blocks, with language detection using [info strings](https://github.github.com/gfm/#example-112).
+- MathML to LaTeX conversion, using [mathml-to-latex](https://github.com/asnunes/mathml-to-latex) (delimited by `$` and `$$` for inline and block rendering respectively).
 
 ### Known Issues
 

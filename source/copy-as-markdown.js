@@ -1,5 +1,6 @@
 import TurndownService from 'turndown';
 import {gfm} from 'turndown-plugin-gfm';
+import {MathMLToLaTeX} from 'mathml-to-latex';
 
 // Chrome does not support the browser namespace yet.
 if (typeof browser === 'undefined') {
@@ -14,6 +15,7 @@ const turndownService = new TurndownService({
 	codeBlockStyle: 'fenced'
 });
 turndownService.keep(['kbd', 'sup', 'sub']); // HTML content to retain in Markdown
+turndownService.remove(['script']);
 turndownService.use(gfm);
 
 // Workaround to fix #7 until https://github.com/domchristie/turndown/issues/291 gets fixed
@@ -34,6 +36,19 @@ turndownService.addRule('listItem', {
 		}
 
 		return (prefix + content + (node.nextSibling && !/\n$/.test(content) ? '\n' : ''));
+	}
+});
+
+turndownService.addRule('mathml', {
+	filter: 'math',
+	replacement: (content, node, _) => {
+		const latex = MathMLToLaTeX.convert(node.outerHTML);
+		if (!latex) {
+			return '';
+		}
+
+		const delim = node.getAttribute('display') === 'block' ? '$$' : '$';
+		return delim + latex + delim;
 	}
 });
 
