@@ -41,7 +41,7 @@ turndownService.addRule('listItem', {
 
 turndownService.addRule('mathml', {
 	filter: 'math',
-	replacement: (content, node, options) => {
+	replacement: (content, node, _) => {
 		const latex = MathMLToLaTeX.convert(node.outerHTML);
 		if (!latex) {
 			return '';
