@@ -8,10 +8,6 @@
 
 [<img src="https://raw.githubusercontent.com/alrra/browser-logos/90fdf03c/src/firefox/firefox.svg" width="48" alt="Firefox" valign="middle">][link-firefox] [<img valign="middle" src="https://img.shields.io/amo/v/cpy-as-md.svg?label=%20">][link-firefox] including Firefox Android
 
-## Screenshot
-
-![Copy as Markdown](media/screenshot-1280x800.png)
-
 ## Features
 
 The extension allows you to copy selected text on a page as Markdown with support for features including the following
@@ -24,16 +20,24 @@ The extension allows you to copy selected text on a page as Markdown with suppor
 - Fenced code blocks, with language detection using [info strings](https://github.github.com/gfm/#example-112).
 - MathML to LaTeX conversion, using [mathml-to-latex](https://github.com/asnunes/mathml-to-latex) (delimited by `$` and `$$` for inline and block rendering respectively).
 
-### Permissions
+<table>
+	<tr>
+		<th width="50%">
+            <p><img src="./media/screenshot-640x400.png">
+		<th width="50%">
+			<p><img src="./media/screenshot-1280x800.png">
+</table>
+
+## Permissions
 
 The extension requires the following permission from you for working.
 
 1. `contextMenus`: to show option when right-clicking.
 1. `activeTab`: to be able to access content on page.
 
-### Known Issues
+## Known Issues
 
-#### Security Considerations
+### Security Considerations
 
 Copying to clipboard might not work in some of the following scenarios:
 
@@ -44,11 +48,11 @@ These are a result of the software design decisions made to protect the user fro
 
 More info can be found on MDN about [User Activation](link-transient-activation) and [Secure Contexts][link-secure-contexts].
 
-#### Copying Embedded Content
+### Copying Embedded Content
 
 Web pages sometimes embed content from other page using an [`iframe`](http://mdn.io/iframe). Due to security considerations around accessing and modifying clipboard (see section above), this extension doesn't work if you try to copy text from inside these frames.
 
-#### Edge cases in Chromium Browsers
+### Edge cases in Chromium Browsers
 
 When copying links and images, Chrome doesn’t let you extract images alt text or anchors text content to be used in Markdown, instead the links themselves are used as link title. Firefox doesn’t have this limitation.
 
