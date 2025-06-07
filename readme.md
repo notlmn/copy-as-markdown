@@ -4,8 +4,9 @@
 
 ## Install
 
-- [**Chrome** extension][link-cws] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/nlaionblcaejecbkcillglodmmfhjhfi.svg?label=%20">][link-cws]
-- [**Firefox** add-on][link-amo] [<img valign="middle" src="https://img.shields.io/amo/v/cpy-as-md.svg?label=%20">][link-amo]
+[<img src="https://raw.githubusercontent.com/alrra/browser-logos/90fdf03c/src/chrome/chrome.svg" width="48" alt="Chrome" valign="middle">][link-chrome] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/nlaionblcaejecbkcillglodmmfhjhfi.svg?label=%20">][link-chrome] and other Chromium browsers
+
+[<img src="https://raw.githubusercontent.com/alrra/browser-logos/90fdf03c/src/firefox/firefox.svg" width="48" alt="Firefox" valign="middle">][link-firefox] [<img valign="middle" src="https://img.shields.io/amo/v/cpy-as-md.svg?label=%20">][link-firefox] including Firefox Android
 
 ## Screenshot
 
@@ -64,8 +65,8 @@ When copying links and images, Chrome doesn’t let you extract images alt text 
 
 [MIT](license)
 
-[link-amo]: https://addons.mozilla.org/en-US/firefox/addon/cpy-as-md
-[link-cws]: https://chromewebstore.google.com/detail/copy-as-markdown/nlaionblcaejecbkcillglodmmfhjhfi
+[link-firefox]: https://addons.mozilla.org/en-US/firefox/addon/cpy-as-md
+[link-chrome]: https://chromewebstore.google.com/detail/copy-as-markdown/nlaionblcaejecbkcillglodmmfhjhfi
 [link-security-considerations]: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API#security_considerations
 [link-transient-activation]: https://developer.mozilla.org/en-US/docs/Web/Security/User_activation
 [link-secure-contexts]: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts
